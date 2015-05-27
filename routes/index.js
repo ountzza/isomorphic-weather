@@ -6,7 +6,7 @@ var express = require('express');
 var router = express.Router();
 var app = require('../app');
 var getWeatherAction = require('../actions/getWeatherAction');
-import provideContext from 'fluxible/addons/provideContext';
+import FluxibleComponent from 'fluxible/addons/FluxibleComponent';
 
 /* GET home page. */
 router.get('/:city', function(req, res, next) {
@@ -20,9 +20,11 @@ router.get('/:city', function(req, res, next) {
 
         Router.run(app.getComponent(), req.originalUrl ,function(Handler){
 
-            Handler =  provideContext(Handler);
+
             var appHTML = React.renderToString(
-                <Handler context={context.getComponentContext()}/>
+              <FluxibleComponent context={context.getComponentContext()}>
+                <Handler />
+              </FluxibleComponent>
             );
             // let state = app.dehydrate(context);
             res.render('index', { title: 'Express', appHTML:appHTML });
