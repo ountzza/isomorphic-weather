@@ -64,15 +64,22 @@
 
 	var _app2 = _interopRequireDefault(_app);
 
-	var context = _app2['default'].createContext();
+	var dehydratedState = window.App;
 
-	_reactRouter2['default'].run(_app2['default'].getComponent(), _reactRouter2['default'].HistoryLocation, function (Handler) {
-	  var appHTML = _react2['default'].render(_react2['default'].createElement(
-	    _fluxibleAddonsFluxibleComponent2['default'],
-	    { context: context.getComponentContext() },
-	    _react2['default'].createElement(Handler, null)
-	  ), document.getElementById('app'));
-	  // let state = app.dehydrate(context);
+	_app2['default'].rehydrate(dehydratedState, function (err, context) {
+	    if (err) {
+	        throw err;
+	    }
+	    window.context = context;
+
+	    _reactRouter2['default'].run(_app2['default'].getComponent(), _reactRouter2['default'].HistoryLocation, function (Handler) {
+	        var appHTML = _react2['default'].render(_react2['default'].createElement(
+	            _fluxibleAddonsFluxibleComponent2['default'],
+	            { context: context.getComponentContext() },
+	            _react2['default'].createElement(Handler, null)
+	        ), document.getElementById('app'));
+	        // let state = app.dehydrate(context);
+	    });
 	});
 
 /***/ },
@@ -29491,9 +29498,6 @@
 	    getStore: React.PropTypes.func.isRequired,
 	    executeAction: React.PropTypes.func.isRequired
 	  },
-	  statics: {
-	    storeListeners: [WeatherStore]
-	  },
 	  getInitialState: function getInitialState() {
 	    return this.getStateFromStore();
 	  },
@@ -29507,7 +29511,9 @@
 	  },
 	  componentDidMount: function componentDidMount() {
 	    this.context.getStore(WeatherStore).addChangeListener(this.onChange);
-	    this.requestData();
+	    if (!this.state.weather) {
+	      this.requestData();
+	    }
 	  },
 
 	  componentWillUnmount: function componentWillUnmount() {
@@ -29565,7 +29571,7 @@
 	Object.defineProperty(exports, '__esModule', {
 	    value: true
 	});
-	exports['default'] = myAction;
+	exports['default'] = getWeatherAction;
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
@@ -29573,9 +29579,8 @@
 
 	var _apiGetWeather2 = _interopRequireDefault(_apiGetWeather);
 
-	function myAction(actionContext, payload, done) {
+	function getWeatherAction(actionContext, payload, done) {
 	    (0, _apiGetWeather2['default'])(payload.city, function (err, res) {
-	        console.log(actionContext);
 	        var weatherPayload = {};
 	        weatherPayload.city = payload.city;
 	        weatherPayload.data = res.body;

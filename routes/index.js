@@ -7,6 +7,7 @@ var router = express.Router();
 var app = require('../app');
 var getWeatherAction = require('../actions/getWeatherAction');
 var FluxibleComponent = require('fluxible/addons/FluxibleComponent');
+var serialize = require('serialize-javascript');
 
 /* GET home page. */
 router.get('/:city', function(req, res, next) {
@@ -17,16 +18,17 @@ router.get('/:city', function(req, res, next) {
     };
 
     context.executeAction(getWeatherAction, payload, function () {
-
-        // Router.run(app.getComponent(), req.originalUrl ,function(Handler){
-        //     var appHTML = React.renderToString(
-        //       <FluxibleComponent context={context.getComponentContext()}>
-        //         <Handler />
-        //       </FluxibleComponent>
-        //     );
-        //     // let state = app.dehydrate(context);
-        //     res.render('index', { title: 'Express', appHTML:appHTML });
-        // });
+      var exposed = 'window.App=' + serialize(app.dehydrate(context)) + ';';
+      var state = React.renderToStaticMarkup(<script dangerouslySetInnerHTML={{__html: exposed}}></script>);
+      Router.run(app.getComponent(), req.originalUrl ,function(Handler){
+          var appHTML = React.renderToString(
+            <FluxibleComponent context={context.getComponentContext()}>
+              <Handler />
+            </FluxibleComponent>
+          );
+          // let state = app.dehydrate(context);
+          res.render('index', { title: 'Express', appHTML:appHTML, state: state });
+      });
     });
 
 

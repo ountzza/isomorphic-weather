@@ -25,7 +25,9 @@ var weather = React.createClass({
     },
     componentDidMount: function() {
       this.context.getStore(WeatherStore).addChangeListener(this.onChange);
-      this.requestData();
+      if (!this.state.weather) {
+        this.requestData();
+      }
     },
 
     componentWillUnmount: function() {

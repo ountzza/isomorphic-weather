@@ -8,8 +8,8 @@ Demonstration of implementing Isomorphic web application using React, React-Rout
 git clone https://github.com/ountzza/isomorphic-weather.git
 cd isomorphic-weather
 npm install
+webpack
 npm start
 
 # open http://127.0.0.1:3000/paris
 ```
-
