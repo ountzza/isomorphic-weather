@@ -1,5 +1,5 @@
 var React = require('react');
-var RouteHandler = require('react-router').RouteHandler;
+var {RouteHandler, Link} = require('react-router');
 
 
 var main = React.createClass({
@@ -8,10 +8,10 @@ var main = React.createClass({
         return (
             <div>
                 <ul>
-                    <li><a href="/bangkok">Bangkok</a></li>
-                    <li><a href="/paris">Paris</a></li>
-                    <li><a href="/tokyo">Tokyo</a></li>
-                    <li><a href="/newyork">New York</a></li>
+                    <li><Link to="/bangkok">Bangkok</Link></li>
+                    <li><Link to="/paris">Paris</Link></li>
+                    <li><Link to="/tokyo">Tokyo</Link></li>
+                    <li><Link to="/newyork">New York</Link></li>
                 </ul>
                 <h1> Hello React </h1>
                 <RouteHandler />
